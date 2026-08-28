@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -31,7 +32,7 @@ function Login() {
       const data = await loginUser(formData);
 
       login(data.user, data.token);
-      setMessage("Login successful!");
+      navigate("/dashboard");
     } catch (error) {
       setError(error.message);
     }

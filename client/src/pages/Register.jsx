@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { registerUser } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser, loginUser } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 function Register() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,16 +30,16 @@ function Register() {
     setError("");
 
     try {
-      const data = await registerUser(formData);
+      await registerUser(formData);
 
-      setMessage(data.message);
+const loginData = await loginUser({
+  email: formData.email,
+  password: formData.password
+});
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        password: ""
-      });
+login(loginData.user, loginData.token);
+
+navigate("/dashboard");
     } catch (error) {
       setError(error.message);
     }
